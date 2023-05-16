@@ -1,9 +1,9 @@
 import { WebSocket } from 'ws';
 import { logger } from '../logger';
 import { DefaultConfig, NetworkConfig } from '../config';
-import { WsData, WsRequest, WsResponse } from './index';
+import { WsRequest, WsResponse } from './index';
 import { createPacketIdGenerator } from '../packet/packet-id-generator';
-import { parse, stringify } from 'lossless-json';
+import { stringify } from 'lossless-json';
 import TypedEmitter from 'typed-emitter/rxjs';
 import { EventEmitter } from 'eventemitter3';
 import { SocketEvent } from '../event';
@@ -21,6 +21,7 @@ export class OpenlinkSocket extends (EventEmitter as unknown as new () => TypedE
     constructor(
         private readonly config: NetworkConfig,
         private readonly linkId: number,
+        private readonly cookie: string
     ) {
         super();
     }
@@ -32,13 +33,15 @@ export class OpenlinkSocket extends (EventEmitter as unknown as new () => TypedE
         }
 
         this.socket = new WebSocket(`wss://${this.config.socketDomain}${this.config.socketPath}${this.linkId}`);
+
+        this.initSocket();
     }
 
     private initSocket() {
         this.socket.on('message', (e: WsResponse) => {
             logger.debug(`[socket] receive`, e);
 
-            const payload = parse(e['data']) as WsData;
+            const payload = e.data as unknown as WsResponse;
 
             const packetId = payload['packetId'] ?? 0;
 
@@ -48,7 +51,7 @@ export class OpenlinkSocket extends (EventEmitter as unknown as new () => TypedE
         })
     }
 
-    async send<T = Record<string, unknown>>(data: WsRequest) {
+    async send<T = Record<string, unknown>>(data: WsRequest): Promise<T> {
         if (this.socket.readyState !== WebSocket.OPEN) {
             logger.error('[socket] socket is not open');
             return;
@@ -72,12 +75,12 @@ export class OpenlinkSocket extends (EventEmitter as unknown as new () => TypedE
         })
     }
 
-    static async create(config: Partial<NetworkConfig>, linkId: number) {
+    static async create(config: Partial<NetworkConfig>, linkId: number, cookie: string) {
         const networkConfig = {
             ...DefaultConfig,
             ...config,
         };
-        return new OpenlinkSocket(networkConfig, linkId);
+        return new OpenlinkSocket(networkConfig, linkId, cookie);
     }
 
 }
