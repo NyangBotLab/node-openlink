@@ -1,5 +1,5 @@
 export const DefaultConfig: AllConfig = {
-    socketDomain: 'cbt-chat-openlink.kakao.com',
+    socketDomain: 'chat-openlink.kakao.com',
     socketPath: '/socket/okay/v1/links/',
     randomSeed: 10000,
 }

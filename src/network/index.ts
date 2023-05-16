@@ -1,4 +1,4 @@
-export interface WsRequest {
+export interface WsRequest extends Record<string, unknown> {
     method: string;
 }
 
