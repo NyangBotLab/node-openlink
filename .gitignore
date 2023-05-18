@@ -164,5 +164,6 @@ $RECYCLE.BIN/
 *.lnk
 
 node_modules/
+test/
 
 # End of https://www.toptal.com/developers/gitignore/api/webstorm+all,macos,linux,windows
