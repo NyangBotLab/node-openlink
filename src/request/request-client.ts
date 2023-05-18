@@ -46,7 +46,6 @@ export class RequestClient {
 
             return { success: true, status: res.status, result: res };
         } catch (e) {
-            console.log(e)
             if (axios.isAxiosError(e)) {
                 return { success: false, status: e.status }
             }
