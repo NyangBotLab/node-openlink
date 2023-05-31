@@ -14,8 +14,10 @@ export interface ChatInfo {
     linkMember: LinkUser;
     mentions: unknown[]; // TODO: 타입을 밝혀내자!
     status: 'SHOW' | 'DELETE_USER' | 'BLOCK_BY_SAFEBOT' | string;
-    type: 'TEXT' | 'IMAGE';
+    type: ChatType;
     updatedAt: string;
     originalImages?: Image[];
     thumbnailImages?: Image[];
 }
+
+export type ChatType = 'TEXT' | 'IMAGE' | string;

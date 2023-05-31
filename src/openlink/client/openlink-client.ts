@@ -8,7 +8,7 @@ import { PacketHandler } from '../packet/packet-handler';
 
 export class OpenlinkClient extends (EventEmitter as unknown as new () => TypedEmitter<ClientEvent>) {
 
-    private socket: OpenlinkSocket;
+    public socket: OpenlinkSocket;
     private packetHandler: PacketHandler = new PacketHandler(this);
 
     constructor(
